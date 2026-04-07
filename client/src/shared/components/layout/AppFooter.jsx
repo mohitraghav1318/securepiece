@@ -68,12 +68,12 @@ export default function AppFooter() {
                 <span className="text-stable-900 transition-colors group-hover:text-teal-600">
                   Secure
                 </span>
-                <span className="text-teal-500">Sphere.</span>
+                <span className="text-teal-500">piece</span>
               </span>
               <motion.div className="absolute -inset-2 bg-gradient-to-r from-teal-400/20 to-cyan-400/0 blur-xl -z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
             </Link>
             <p className="mb-7 max-w-sm text-[0.92rem] leading-relaxed text-stable-500">
-              SecureSphere is the identity layer for modern apps, blending
+              Securepiece is the identity layer for modern apps, blending
               conversion-focused UX with robust session security.
             </p>
 
@@ -95,7 +95,7 @@ export default function AppFooter() {
               </div>
               <input
                 type="email"
-                placeholder="Get SecureSphere updates"
+                placeholder="Get Securepiece updates"
                 className="w-full bg-transparent px-3 py-2.5 text-[0.9rem] text-stable-900 placeholder:text-stable-400 focus:outline-none"
               />
               <button
@@ -180,7 +180,7 @@ export default function AppFooter() {
           className="mt-14 flex shrink-0 flex-col items-center justify-between gap-5 border-t border-stable-200/80 pt-6 md:flex-row"
         >
           <p className="text-[0.8rem] text-stable-500">
-            © 2025 SecureSphere. All rights reserved.
+            © 2025 Securepiece. All rights reserved.
           </p>
           <div className="flex gap-5 items-center">
             <motion.a

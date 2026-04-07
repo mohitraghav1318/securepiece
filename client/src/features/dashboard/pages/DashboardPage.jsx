@@ -116,10 +116,10 @@ export default function DashboardPage() {
     <section className="w-full space-y-6">
       <div className="rounded-3xl border border-stable-200 bg-white p-8 shadow-sm">
         <h1 className="text-2xl font-extrabold tracking-tight text-stable-900">
-          Dashboard
+          Securepiece Dashboard
         </h1>
         <p className="mt-2 text-sm text-stable-600">
-          View and manage your account details from here.
+          View and manage your Securepiece account details from here.
         </p>
 
         <form className="mt-6 space-y-4" onSubmit={handleSaveProfile}>

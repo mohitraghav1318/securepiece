@@ -31,7 +31,7 @@ export default function AppHeader() {
           className="text-xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-teal-700 to-emerald-600"
           to={APP_ROUTES.home}
         >
-          Authentication
+          Securepiece
         </Link>
 
         {/* Floating rounded nav bar */}

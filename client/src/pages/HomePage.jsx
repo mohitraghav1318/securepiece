@@ -32,7 +32,7 @@ const stepStaggerContainer = {
 const flowSteps = [
   {
     title: 'Request Access',
-    text: 'Users enter an email and SecureSphere triggers an encrypted one-time authentication flow.',
+    text: 'Users enter an email and Securepiece triggers an encrypted one-time authentication flow.',
   },
   {
     title: 'Verify Identity',
@@ -140,7 +140,7 @@ export default function HomePage() {
             >
               <span className="h-[7px] w-[7px] rounded-full bg-teal-500 animate-pulse" />
               <span className="text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-teal-700">
-                SecureSphere Protocol
+                Securepiece Protocol
               </span>
             </motion.div>
 
@@ -161,7 +161,7 @@ export default function HomePage() {
               className="max-w-[620px] text-[1.05rem] leading-[1.75] text-stable-500"
             >
               Beautifully animated authentication that feels effortless.
-              SecureSphere gives your users fast access while preserving
+              Securepiece gives your users fast access while preserving
               enterprise-grade trust.
             </motion.p>
 
@@ -222,7 +222,7 @@ export default function HomePage() {
                   <div className="h-[10px] w-[10px] rounded-full bg-[#28c840]" />
                 </div>
                 <span className="text-xs font-semibold uppercase tracking-[0.1em] text-stable-400">
-                  SecureSphere Access
+                  Securepiece Access
                 </span>
               </div>
               <div className="space-y-6 p-6 md:p-7">
@@ -231,7 +231,7 @@ export default function HomePage() {
                     Welcome back
                   </p>
                   <h3 className="mt-1 text-2xl font-black tracking-tight text-stable-900">
-                    Continue with SecureSphere
+                    Continue with Securepiece
                   </h3>
                 </div>
 
@@ -294,7 +294,7 @@ export default function HomePage() {
               className="font-black tracking-[-0.02em] text-stable-900"
               style={{ fontSize: 'clamp(2.3rem, 5vw, 4rem)', lineHeight: 1.08 }}
             >
-              How SecureSphere
+              How Securepiece
               <span className="block text-teal-500">flows in real-time.</span>
             </motion.h2>
 
@@ -479,7 +479,7 @@ export default function HomePage() {
             style={{ fontSize: 'clamp(2.2rem, 4.8vw, 3.8rem)' }}
           >
             <span className="block text-stable-900">Ready to launch</span>
-            <span className="block text-teal-500">SecureSphere?</span>
+            <span className="block text-teal-500">Securepiece?</span>
           </motion.h2>
 
           <motion.p
@@ -499,7 +499,7 @@ export default function HomePage() {
               to={APP_ROUTES.register}
               className="relative inline-flex rounded-full bg-teal-500 px-10 py-3.5 text-[0.98rem] font-bold text-white transition-all hover:scale-[1.02] hover:bg-teal-600"
             >
-              Create SecureSphere Account
+              Create Securepiece Account
             </Link>
           </motion.div>
         </motion.div>
