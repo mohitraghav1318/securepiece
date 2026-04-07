@@ -15,7 +15,15 @@
   --color-stable-900: #0f172a;
 }
 
+:root {
+  --font-display: 'Montserrat', sans-serif;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: var(--color-stable-50);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
 }

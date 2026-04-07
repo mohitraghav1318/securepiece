@@ -15,26 +15,24 @@ export default function AppRouter() {
           <AppHeader />
         </div>
 
-        <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-4">
-          <div className="w-full max-w-4xl">
-            <Routes>
-              <Route path={APP_ROUTES.home} element={<HomePage />} />
-              <Route path={APP_ROUTES.login} element={<LoginPage />} />
-              <Route path={APP_ROUTES.register} element={<RegisterPage />} />
-              <Route
-                path={APP_ROUTES.dashboard}
-                element={
-                  <ProtectedRoute>
-                    <DashboardPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="*"
-                element={<Navigate replace to={APP_ROUTES.home} />}
-              />
-            </Routes>
-          </div>
+        <div className="relative z-10 flex-1 w-full">
+          <Routes>
+            <Route path={APP_ROUTES.home} element={<HomePage />} />
+            <Route path={APP_ROUTES.login} element={<LoginPage />} />
+            <Route path={APP_ROUTES.register} element={<RegisterPage />} />
+            <Route
+              path={APP_ROUTES.dashboard}
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="*"
+              element={<Navigate replace to={APP_ROUTES.home} />}
+            />
+          </Routes>
         </div>
       </div>
     </BrowserRouter>

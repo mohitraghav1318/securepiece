@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Environment, Float, MeshDistortMaterial } from '@react-three/drei';
 import * as THREE from 'three';
@@ -52,7 +52,7 @@ function CompanionObject() {
         <icosahedronGeometry args={[1, 0]} />
         {/* A sexy glass-like material that reflects the environment */}
         <MeshDistortMaterial
-          color="var(--color-primary, #0d9488)" // Fallback to teal if var fails
+          color="#e2e8f0"
           envMapIntensity={1}
           clearcoat={0.9}
           clearcoatRoughness={0.1}
@@ -71,13 +71,17 @@ function CompanionObject() {
 export default function GuidingScene() {
   return (
     <div className="pointer-events-none fixed inset-0 z-0 h-screen w-screen">
-      <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[10, 10, 5]} intensity={1} />
+      <Canvas
+        camera={{ position: [0, 0, 5], fov: 45 }}
+        className="pointer-events-none"
+        style={{ pointerEvents: 'none' }}
+      >
+        <ambientLight intensity={0.65} />
+        <directionalLight position={[10, 10, 5]} intensity={0.9} />
         <directionalLight
           position={[-10, -10, -5]}
-          intensity={0.5}
-          color="#14b8a6"
+          intensity={0.35}
+          color="#ffffff"
         />
 
         <CompanionObject />
