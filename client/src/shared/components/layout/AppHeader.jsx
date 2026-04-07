@@ -26,18 +26,53 @@ export default function AppHeader() {
 
   return (
     <header className="w-full relative z-20">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6 border-b border-stable-200/50 bg-transparent backdrop-blur-md">
-        <Link
-          className="text-xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-teal-700 to-emerald-600"
-          to={APP_ROUTES.home}
-        >
-          Securepiece
-        </Link>
+      <div className="mx-auto w-full max-w-6xl px-6 py-6 border-b border-stable-200/50 bg-transparent backdrop-blur-md">
+        <div className="flex items-center justify-between">
+          <Link
+            className="text-xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-teal-700 to-emerald-600"
+            to={APP_ROUTES.home}
+          >
+            Securepiece
+          </Link>
 
-        {/* Floating rounded nav bar */}
-        <nav className="hidden md:flex items-center gap-1 rounded-full border border-stable-200/60 bg-white/70 px-2 py-1.5 shadow-sm backdrop-blur-xl">
+          {/* Floating rounded nav bar */}
+          <nav className="hidden md:flex items-center gap-1 rounded-full border border-stable-200/60 bg-white/70 px-2 py-1.5 shadow-sm backdrop-blur-xl">
+            {navItems.map((item) => {
+              // Keep dashboard nav active even on nested dashboard paths.
+              const isActive =
+                item.to === APP_ROUTES.dashboard
+                  ? location.pathname.startsWith(APP_ROUTES.dashboard)
+                  : location.pathname === item.to;
+
+              return (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className={`rounded-full px-5 py-2 text-sm font-bold transition-all ${
+                    isActive
+                      ? 'bg-teal-600 text-white shadow-md shadow-teal-500/20'
+                      : 'text-stable-600 hover:bg-stable-200/50 hover:text-stable-900'
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+
+            {isLoggedIn && (
+              <button
+                type="button"
+                className="ml-2 rounded-full border border-stable-300 bg-white px-5 py-2 text-sm font-bold text-stable-700 transition hover:bg-stable-50 hover:border-stable-400 focus:outline-none focus:ring-2 focus:ring-stable-500/20"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            )}
+          </nav>
+        </div>
+
+        <nav className="mt-4 flex md:hidden items-center gap-2 overflow-x-auto pb-1">
           {navItems.map((item) => {
-            // Keep dashboard nav active even on nested dashboard paths.
             const isActive =
               item.to === APP_ROUTES.dashboard
                 ? location.pathname.startsWith(APP_ROUTES.dashboard)
@@ -45,12 +80,12 @@ export default function AppHeader() {
 
             return (
               <Link
-                key={item.to}
+                key={`mobile-${item.to}`}
                 to={item.to}
-                className={`rounded-full px-5 py-2 text-sm font-bold transition-all ${
+                className={`shrink-0 rounded-full px-4 py-2 text-xs font-bold transition-all ${
                   isActive
                     ? 'bg-teal-600 text-white shadow-md shadow-teal-500/20'
-                    : 'text-stable-600 hover:bg-stable-200/50 hover:text-stable-900'
+                    : 'border border-stable-300 bg-white/80 text-stable-700'
                 }`}
               >
                 {item.label}
@@ -61,7 +96,7 @@ export default function AppHeader() {
           {isLoggedIn && (
             <button
               type="button"
-              className="ml-2 rounded-full border border-stable-300 bg-white px-5 py-2 text-sm font-bold text-stable-700 transition hover:bg-stable-50 hover:border-stable-400 focus:outline-none focus:ring-2 focus:ring-stable-500/20"
+              className="shrink-0 rounded-full border border-stable-300 bg-white px-4 py-2 text-xs font-bold text-stable-700 transition hover:bg-stable-50"
               onClick={handleLogout}
             >
               Logout

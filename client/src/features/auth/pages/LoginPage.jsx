@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { authApi } from '../api/auth.api';
 import AuthCard from '../components/AuthCard';
 import AuthField from '../components/AuthField';
@@ -18,6 +18,7 @@ const MotionMain = motion.main;
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [mode, setMode] = useState(LOGIN_MODE.password);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -27,6 +28,14 @@ export default function LoginPage() {
   const [otpRequested, setOtpRequested] = useState(false);
 
   const [message, setMessage] = useState({ type: 'info', text: '' });
+
+  useEffect(() => {
+    const reason = location?.state?.reason;
+
+    if (reason) {
+      setMessage({ type: 'error', text: reason });
+    }
+  }, [location]);
 
   // Automatically redirect to dashboard if the user already has a valid token
   useEffect(() => {
