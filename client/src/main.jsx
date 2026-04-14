@@ -1,10 +1,20 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App';
-import './shared/styles/globals.css';
+/**
+ * Application Entry Point
+ *
+ * This file mounts the React application to the DOM.
+ * Vite loads this file first.
+ */
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import './index.css';
+
+/**
+ * Create the React root and render the App component.
+ */
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
     <App />
-  </StrictMode>,
+  </React.StrictMode>,
 );
