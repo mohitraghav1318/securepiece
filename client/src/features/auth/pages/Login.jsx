@@ -18,6 +18,8 @@ import AuthCard from '../components/AuthCard';
 import Input from '../../../components/ui/Input';
 import Button from '../../../components/ui/Button';
 
+import { motion } from 'framer-motion';
+
 import {
   loginWithPassword,
   requestLoginOtp,
@@ -150,101 +152,117 @@ function Login() {
   };
 
   return (
-    <AuthCard title="Login">
-      {/* ------------------------------------------------ */}
-      {/* PASSWORD LOGIN FORM                             */}
-      {/* ------------------------------------------------ */}
-      {mode === 'password' && (
-        <form onSubmit={handlePasswordLogin}>
-          <Input
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+    <div className="min-h-screen flex items-center justify-center bg-gray px-4">
+      {/* MAIN CARD */}
+      <div className="w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden grid md:grid-cols-2">
+        {/* ---------------- LEFT SIDE ---------------- */}
+        <div className="hidden md:flex flex-col justify-center p-12 bg-[oklch(0.38_0.13_262.23)] text-white">
+          <h1 className="text-3xl font-semibold mb-4">SecurePiece 🔐</h1>
 
-          <Input
-            type="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <p className="text-gray-300 leading-relaxed">
+            Secure authentication with OTP and JWT. Built for performance,
+            reliability, and simplicity.
+          </p>
 
-          {/* Button receives loading state */}
-          <Button type="submit" loading={loading}>
-            Login
-          </Button>
-        </form>
-      )}
+          <div className="mt-8 text-sm text-gray-400">
+            “Security is not a feature, it's a foundation.”
+          </div>
+        </div>
 
-      {/* ------------------------------------------------ */}
-      {/* OTP LOGIN STEP 1 — REQUEST OTP                  */}
-      {/* ------------------------------------------------ */}
-      {mode === 'otp' && otpStep === 'request' && (
-        <form onSubmit={handleRequestOtp}>
-          <Input
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+        {/* ---------------- RIGHT SIDE ---------------- */}
+        <div className="flex items-center justify-center p-8">
+          <div className="w-full max-w-sm">
+            <h2 className="text-2xl font-semibold mb-6 text-center">
+              Welcome Back
+            </h2>
 
-          <Button type="submit" loading={loading}>
-            Send OTP
-          </Button>
-        </form>
-      )}
+            {/* PASSWORD LOGIN */}
+            {mode === 'password' && (
+              <form onSubmit={handlePasswordLogin}>
+                <div className="space-y-4">
+                  <Input
+                    type="email"
+                    placeholder="Email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
 
-      {/* ------------------------------------------------ */}
-      {/* OTP LOGIN STEP 2 — VERIFY OTP                   */}
-      {/* ------------------------------------------------ */}
-      {mode === 'otp' && otpStep === 'verify' && (
-        <form onSubmit={handleVerifyOtp}>
-          <Input
-            placeholder="Enter OTP"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-          />
+                  <Input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
 
-          <Button type="submit" loading={loading}>
-            Verify OTP
-          </Button>
-        </form>
-      )}
+                  <Button type="submit" loading={loading}>
+                    Login
+                  </Button>
+                </div>
+              </form>
+            )}
 
-      {/* ------------------------------------------------ */}
-      {/* LOGIN MODE SWITCH (Password ↔ OTP)              */}
-      {/* ------------------------------------------------ */}
-      <div className="text-center mt-4">
-        <button
-          onClick={() => {
-            /**
-             * Toggle login mode
-             * Reset OTP step when switching modes
-             */
-            setMode(mode === 'password' ? 'otp' : 'password');
-            setOtpStep('request');
-          }}
-          className="text-sm text-blue-600 hover:underline"
-        >
-          {mode === 'password' ? 'Login with OTP' : 'Login with Password'}
-        </button>
+            {/* OTP STEP 1 */}
+            {mode === 'otp' && otpStep === 'request' && (
+              <form onSubmit={handleRequestOtp}>
+                <div className="space-y-4">
+                  <Input
+                    type="email"
+                    placeholder="Email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+
+                  <Button type="submit" loading={loading}>
+                    Send OTP
+                  </Button>
+                </div>
+              </form>
+            )}
+
+            {/* OTP STEP 2 */}
+            {mode === 'otp' && otpStep === 'verify' && (
+              <form onSubmit={handleVerifyOtp}>
+                <div className="space-y-4">
+                  <Input
+                    placeholder="Enter OTP"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                  />
+
+                  <Button type="submit" loading={loading}>
+                    Verify OTP
+                  </Button>
+                </div>
+              </form>
+            )}
+
+            {/* SWITCH */}
+            <div className="text-center mt-5">
+              <button
+                onClick={() => {
+                  setMode(mode === 'password' ? 'otp' : 'password');
+                  setOtpStep('request');
+                }}
+                className="text-sm text-gray-500 hover:text-black transition"
+              >
+                {mode === 'password' ? 'Login with OTP' : 'Login with Password'}
+              </button>
+            </div>
+
+            {/* SIGNUP */}
+            <div className="text-center mt-4 text-sm text-gray-500">
+              Don’t have an account?{' '}
+              <button
+                onClick={() => navigate('/signup')}
+                className="text-black font-medium hover:underline"
+              >
+                Sign up
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-
-      {/* ------------------------------------------------ */}
-      {/* NAVIGATION TO SIGNUP                            */}
-      {/* ------------------------------------------------ */}
-      <div className="text-center mt-4 text-sm">
-        <span>Don't have an account? </span>
-
-        <button
-          onClick={() => navigate('/signup')}
-          className="text-blue-600 hover:underline"
-        >
-          Sign up
-        </button>
-      </div>
-    </AuthCard>
+    </div>
   );
 }
 
