@@ -10,7 +10,7 @@ function Button({ children, type = 'button', onClick, loading = false }) {
       type={type}
       onClick={onClick}
       disabled={loading}
-      className="w-full py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+      className="w-full py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition duration-200 active:scale-95 shadow-md hover:shadow-lg disabled:opacity-50"
     >
       {loading ? 'Please wait...' : children}
     </button>

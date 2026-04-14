@@ -9,7 +9,7 @@ function Input({ type = 'text', placeholder, value, onChange }) {
       placeholder={placeholder}
       value={value}
       onChange={onChange}
-      className="w-full px-4 py-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className="w-full px-4 py-3 mb-4 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
     />
   );
 }
