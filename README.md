@@ -91,8 +91,8 @@ r-level/
 ### 1. Clone and enter project
 
 ```bash
-git clone <your-repository-url>
-cd r-level
+git clone <repository-url>
+cd authentication
 ```
 
 ### 2. Install dependencies
