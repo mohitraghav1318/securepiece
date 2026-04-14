@@ -73,3 +73,34 @@ export const verifyLoginOtp = async (email, otp) => {
 
   return response.data;
 };
+
+/**
+ * Request OTP for forgot-password flow.
+ */
+export const requestPasswordResetOtp = async (email) => {
+  const response = await api.post('/auth/password-reset/request-otp', {
+    email,
+  });
+
+  return response.data;
+};
+
+/**
+ * Verify OTP in forgot-password flow.
+ */
+export const verifyPasswordResetOtp = async (email, otp) => {
+  const response = await api.post('/auth/password-reset/verify-otp', {
+    email,
+    otp,
+  });
+
+  return response.data;
+};
+
+/**
+ * Complete forgot-password flow by setting new password.
+ */
+export const completePasswordReset = async (data) => {
+  const response = await api.post('/auth/password-reset/complete', data);
+  return response.data;
+};

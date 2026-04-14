@@ -62,6 +62,38 @@ const userSchema = new mongoose.Schema(
       default: null,
       select: false,
     },
+
+    // Password reset OTP fields.
+    passwordResetOtpHash: {
+      type: String,
+      select: false,
+      default: null,
+    },
+
+    passwordResetOtpExpiresAt: {
+      type: Date,
+      select: false,
+      default: null,
+    },
+
+    passwordResetOtpAttempts: {
+      type: Number,
+      default: 0,
+      select: false,
+    },
+
+    passwordResetOtpResendAvailableAt: {
+      type: Date,
+      default: null,
+      select: false,
+    },
+
+    // Set only after correct OTP verification in forgot-password flow.
+    passwordResetVerifiedAt: {
+      type: Date,
+      default: null,
+      select: false,
+    },
   },
   {
     // createdAt and updatedAt are managed automatically by Mongoose.

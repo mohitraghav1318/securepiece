@@ -61,10 +61,15 @@ async function ensureTransporterReady() {
 // OTP is only sent through SMTP.
 // If SMTP is missing or invalid, this function throws an error and never exposes OTP.
 async function sendOtpEmail({ email, otp, purpose, ttlMinutes }) {
+  const purposeToSubject = {
+    login: `Your login OTP (${ttlMinutes} min)`,
+    password_reset: `Your password reset OTP (${ttlMinutes} min)`,
+    signup_verification: `Verify your email OTP (${ttlMinutes} min)`,
+  };
+
   const subject =
-    purpose === 'login'
-      ? `Your login OTP (${ttlMinutes} min)`
-      : `Verify your email OTP (${ttlMinutes} min)`;
+    purposeToSubject[purpose] ||
+    `Your verification OTP (${ttlMinutes} min)`;
 
   const text = `Your OTP is ${otp}. It will expire in ${ttlMinutes} minute(s).`;
 

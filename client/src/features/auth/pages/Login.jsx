@@ -1,93 +1,60 @@
-/**
- * Login Page
- *
- * This component supports two authentication methods:
- *
- * 1️⃣ Password-based login
- * 2️⃣ OTP-based login
- *
- * OTP Login Flow:
- * Step 1 → User enters email → request OTP
- * Step 2 → User enters OTP → verify OTP → receive JWT
- */
+import { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-import AuthCard from '../components/AuthCard';
 import Input from '../../../components/ui/Input';
 import Button from '../../../components/ui/Button';
-
-import { motion } from 'framer-motion';
 
 import {
   loginWithPassword,
   requestLoginOtp,
   verifyLoginOtp,
+  requestPasswordResetOtp,
+  verifyPasswordResetOtp,
+  completePasswordReset,
 } from '../api/authApi';
 
 function Login() {
-  /**
-   * Navigation hook
-   * Used to redirect users after successful authentication
-   */
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const modeFromQuery = searchParams.get('mode');
 
-  /**
-   * Login mode state
-   *
-   * password → traditional email/password login
-   * otp → login using email OTP
-   */
+  // Modes: password login, OTP login, forgot-password reset flow.
   const [mode, setMode] = useState('password');
 
-  /**
-   * OTP step state
-   *
-   * request → ask user email to send OTP
-   * verify → user enters received OTP
-   */
+  // OTP login steps.
   const [otpStep, setOtpStep] = useState('request');
 
-  /**
-   * Form state
-   */
+  // Forgot-password steps.
+  const [resetStep, setResetStep] = useState('request');
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
 
-  /**
-   * Global loading state
-   * Prevents multiple submissions and shows button loading state
-   */
+  const [resetOtp, setResetOtp] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+
   const [loading, setLoading] = useState(false);
 
-  /**
-   * Handle password-based login
-   */
+  useEffect(() => {
+    if (modeFromQuery === 'reset') {
+      setMode('reset');
+      setResetStep('request');
+    }
+  }, [modeFromQuery]);
+
   const handlePasswordLogin = async (e) => {
     e.preventDefault();
-
     setLoading(true);
 
     try {
       const response = await loginWithPassword(email, password);
-
-      /**
-       * Extract token & user info from API response
-       */
       const { token, user } = response.data;
 
-      /**
-       * Store JWT token for authenticated requests
-       */
       localStorage.setItem('token', token);
-
       console.log('Logged in user:', user);
 
-      /**
-       * Redirect user to dashboard
-       */
       navigate('/dashboard');
     } catch (error) {
       alert(error?.response?.data?.message || 'Login failed');
@@ -96,22 +63,13 @@ function Login() {
     }
   };
 
-  /**
-   * Request OTP for login
-   */
   const handleRequestOtp = async (e) => {
     e.preventDefault();
-
     setLoading(true);
 
     try {
       await requestLoginOtp(email);
-
       alert('OTP sent to your email');
-
-      /**
-       * Move to OTP verification step
-       */
       setOtpStep('verify');
     } catch (error) {
       alert(error?.response?.data?.message || 'Failed to send OTP');
@@ -120,29 +78,17 @@ function Login() {
     }
   };
 
-  /**
-   * Verify OTP and complete login
-   */
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
-
     setLoading(true);
 
     try {
       const response = await verifyLoginOtp(email, otp);
-
       const { token, user } = response.data;
 
-      /**
-       * Store authentication token
-       */
       localStorage.setItem('token', token);
-
       console.log('Logged in user:', user);
 
-      /**
-       * Redirect user after successful login
-       */
       navigate('/dashboard');
     } catch (error) {
       alert(error?.response?.data?.message || 'OTP verification failed');
@@ -151,11 +97,74 @@ function Login() {
     }
   };
 
+  const handleRequestPasswordResetOtp = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await requestPasswordResetOtp(email);
+      alert(
+        response?.message ||
+          'If an account exists for this email, an OTP has been sent.',
+      );
+      setResetStep('verify');
+    } catch (error) {
+      alert(error?.response?.data?.message || 'Failed to send reset OTP');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyPasswordResetOtp = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      await verifyPasswordResetOtp(email, resetOtp);
+      alert('OTP verified successfully');
+      setResetStep('set-password');
+    } catch (error) {
+      alert(error?.response?.data?.message || 'OTP verification failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCompletePasswordReset = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await completePasswordReset({
+        email,
+        password: newPassword,
+        confirmPassword: confirmNewPassword,
+      });
+
+      alert(
+        response?.message ||
+          'Password reset successful. Please login with your new password.',
+      );
+
+      setMode('password');
+      setResetStep('request');
+      setResetOtp('');
+      setNewPassword('');
+      setConfirmNewPassword('');
+      setPassword('');
+      setOtp('');
+      setOtpStep('request');
+      setSearchParams({}, { replace: true });
+    } catch (error) {
+      alert(error?.response?.data?.message || 'Failed to reset password');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray px-4">
-      {/* MAIN CARD */}
       <div className="w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden grid md:grid-cols-2">
-        {/* ---------------- LEFT SIDE ---------------- */}
         <div className="hidden md:flex flex-col justify-center p-12 bg-[oklch(0.38_0.13_262.23)] text-white">
           <h1 className="text-3xl font-semibold mb-4">SecurePiece 🔐</h1>
 
@@ -165,93 +174,192 @@ function Login() {
           </p>
 
           <div className="mt-8 text-sm text-gray-400">
-            “Security is not a feature, it's a foundation.”
+            "Security is not a feature, it's a foundation."
           </div>
         </div>
 
-        {/* ---------------- RIGHT SIDE ---------------- */}
         <div className="flex items-center justify-center p-8">
           <div className="w-full max-w-sm">
             <h2 className="text-2xl font-semibold mb-6 text-center">
-              Welcome Back
+              {mode === 'reset' ? 'Reset Password' : 'Welcome Back'}
             </h2>
 
-            {/* PASSWORD LOGIN */}
             {mode === 'password' && (
               <form onSubmit={handlePasswordLogin}>
-                <div className="space-y-4">
-                  <Input
-                    type="email"
-                    placeholder="Email address"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
+                <Input
+                  type="email"
+                  placeholder="Email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
 
-                  <Input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
+                <Input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
 
-                  <Button type="submit" loading={loading}>
-                    Login
-                  </Button>
-                </div>
+                <Button type="submit" loading={loading}>
+                  Login
+                </Button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode('reset');
+                    setResetStep('request');
+                    setSearchParams({ mode: 'reset' }, { replace: true });
+                  }}
+                  className="w-full mt-4 text-sm text-gray-500 hover:text-black transition"
+                >
+                  Forgot password?
+                </button>
               </form>
             )}
 
-            {/* OTP STEP 1 */}
             {mode === 'otp' && otpStep === 'request' && (
               <form onSubmit={handleRequestOtp}>
-                <div className="space-y-4">
-                  <Input
-                    type="email"
-                    placeholder="Email address"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
+                <Input
+                  type="email"
+                  placeholder="Email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
 
-                  <Button type="submit" loading={loading}>
-                    Send OTP
-                  </Button>
-                </div>
+                <Button type="submit" loading={loading}>
+                  Send OTP
+                </Button>
               </form>
             )}
 
-            {/* OTP STEP 2 */}
             {mode === 'otp' && otpStep === 'verify' && (
               <form onSubmit={handleVerifyOtp}>
-                <div className="space-y-4">
-                  <Input
-                    placeholder="Enter OTP"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                  />
+                <Input
+                  type="email"
+                  placeholder="Email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
 
-                  <Button type="submit" loading={loading}>
-                    Verify OTP
-                  </Button>
-                </div>
+                <Input
+                  placeholder="Enter OTP"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                />
+
+                <Button type="submit" loading={loading}>
+                  Verify OTP
+                </Button>
               </form>
             )}
 
-            {/* SWITCH */}
+            {mode === 'reset' && resetStep === 'request' && (
+              <form onSubmit={handleRequestPasswordResetOtp}>
+                <Input
+                  type="email"
+                  placeholder="Email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+
+                <Button type="submit" loading={loading}>
+                  Send Reset OTP
+                </Button>
+              </form>
+            )}
+
+            {mode === 'reset' && resetStep === 'verify' && (
+              <form onSubmit={handleVerifyPasswordResetOtp}>
+                <Input
+                  type="email"
+                  placeholder="Email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+
+                <Input
+                  placeholder="Enter reset OTP"
+                  value={resetOtp}
+                  onChange={(e) => setResetOtp(e.target.value)}
+                />
+
+                <Button type="submit" loading={loading}>
+                  Verify Reset OTP
+                </Button>
+              </form>
+            )}
+
+            {mode === 'reset' && resetStep === 'set-password' && (
+              <form onSubmit={handleCompletePasswordReset}>
+                <Input
+                  type="password"
+                  placeholder="New password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+
+                <Input
+                  type="password"
+                  placeholder="Confirm new password"
+                  value={confirmNewPassword}
+                  onChange={(e) => setConfirmNewPassword(e.target.value)}
+                />
+
+                <Button type="submit" loading={loading}>
+                  Reset Password
+                </Button>
+              </form>
+            )}
+
             <div className="text-center mt-5">
-              <button
-                onClick={() => {
-                  setMode(mode === 'password' ? 'otp' : 'password');
-                  setOtpStep('request');
-                }}
-                className="text-sm text-gray-500 hover:text-black transition"
-              >
-                {mode === 'password' ? 'Login with OTP' : 'Login with Password'}
-              </button>
+              {mode === 'password' && (
+                <button
+                  onClick={() => {
+                    setMode('otp');
+                    setOtpStep('request');
+                    setOtp('');
+                    setSearchParams({}, { replace: true });
+                  }}
+                  className="text-sm text-gray-500 hover:text-black transition"
+                >
+                  Login with OTP
+                </button>
+              )}
+
+              {mode === 'otp' && (
+                <button
+                  onClick={() => {
+                    setMode('password');
+                    setOtpStep('request');
+                    setOtp('');
+                    setSearchParams({}, { replace: true });
+                  }}
+                  className="text-sm text-gray-500 hover:text-black transition"
+                >
+                  Login with Password
+                </button>
+              )}
+
+              {mode === 'reset' && (
+                <button
+                  onClick={() => {
+                    setMode('password');
+                    setResetStep('request');
+                    setResetOtp('');
+                    setNewPassword('');
+                    setConfirmNewPassword('');
+                    setSearchParams({}, { replace: true });
+                  }}
+                  className="text-sm text-gray-500 hover:text-black transition"
+                >
+                  Back to Login
+                </button>
+              )}
             </div>
 
-            {/* SIGNUP */}
             <div className="text-center mt-4 text-sm text-gray-500">
-              Don’t have an account?{' '}
+              Don&apos;t have an account?{' '}
               <button
                 onClick={() => navigate('/signup')}
                 className="text-black font-medium hover:underline"
