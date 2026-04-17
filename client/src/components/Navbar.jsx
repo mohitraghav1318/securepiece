@@ -110,6 +110,7 @@ function Navbar() {
   const location = useLocation();
   const token = localStorage.getItem('token');
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 8);
@@ -119,7 +120,15 @@ function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    setMobileMenuOpen(false);
     navigate('/login');
+  };
+
+  const currentPath = location.pathname;
+
+  const closeMobileMenuAndNavigate = (path) => {
+    setMobileMenuOpen(false);
+    navigate(path);
   };
 
   const navVariants = {
@@ -135,21 +144,28 @@ function Navbar() {
     }),
   };
 
-  const NavLink = ({ label, onClick, isActive, custom, Icon }) => (
+  const NavLink = ({
+    label,
+    onClick,
+    isActive,
+    custom,
+    Icon,
+    className = '',
+  }) => (
     <motion.button
       custom={custom}
       variants={navVariants}
       initial="hidden"
       animate="visible"
       onClick={onClick}
-      className="relative group inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors duration-200"
+      className={`relative group inline-flex items-center gap-1.5 text-sm font-medium transition-colors duration-200 ${isActive ? 'text-blue-400' : 'text-slate-300 hover:text-white'} ${className}`}
       whileTap={{ scale: 0.96 }}
     >
-      {Icon ? <Icon /> : null}
+      {Icon ? <Icon className="w-4 h-4" /> : null}
       {label}
       {/* Animated underline */}
       <motion.span
-        className="absolute -bottom-0.5 left-0 h-px bg-blue-500 origin-left"
+        className="absolute -bottom-1 left-0 h-px bg-blue-500 origin-left"
         initial={{ scaleX: 0 }}
         animate={{ scaleX: isActive ? 1 : 0 }}
         whileHover={{ scaleX: 1 }}
@@ -165,6 +181,7 @@ function Navbar() {
     custom,
     variant = 'primary',
     Icon,
+    className = '',
   }) => {
     const isPrimary = variant === 'primary';
     return (
@@ -176,109 +193,217 @@ function Navbar() {
         onClick={onClick}
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.96 }}
-        className={
+        className={`inline-flex items-center justify-center gap-1.5 text-sm font-medium px-5 py-2.5 rounded-xl transition-all duration-200 ${
           isPrimary
-            ? 'inline-flex items-center gap-1.5 text-sm font-medium px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-sm shadow-blue-200'
-            : 'inline-flex items-center gap-1.5 text-sm font-medium px-4 py-2 text-red-500 border border-red-200 rounded-lg hover:bg-red-50 hover:border-red-300 transition-colors duration-200'
-        }
+            ? 'bg-blue-600 text-white hover:bg-blue-500 shadow-[0_0_15px_rgba(37,99,235,0.3)]'
+            : 'text-red-400 border border-red-500/30 hover:bg-red-500/10 hover:border-red-400'
+        } ${className}`}
       >
-        {Icon ? <Icon /> : null}
+        {Icon ? <Icon className="w-4 h-4" /> : null}
         {label}
       </motion.button>
     );
   };
 
-  return (
-    <motion.nav
-      initial={{ opacity: 0, y: -16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className={`sticky top-0 z-50 px-8 py-4 flex justify-between items-center transition-all duration-300 ${
-        scrolled
-          ? 'backdrop-blur-md bg-white/80 border-b border-gray-200 shadow-sm shadow-gray-100'
-          : 'backdrop-blur-md bg-white/70 border-b border-gray-200'
-      }`}
-    >
-      {/* Logo */}
-      <motion.button
-        onClick={() => navigate('/')}
-        initial={{ opacity: 0, x: -10 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        whileHover={{ scale: 1.03 }}
-        whileTap={{ scale: 0.97 }}
-        className="flex items-center gap-2 group"
-      >
-        <span className="text-blue-600 group-hover:scale-110 transition-transform duration-200">
-          <ShieldIcon className="w-5 h-5" />
-        </span>
-        <span className="text-xl font-bold tracking-tight text-gray-900 group-hover:text-blue-600 transition-colors duration-200">
-          SecurePiece
-        </span>
-      </motion.button>
+  const menuVariants = {
+    closed: {
+      opacity: 0,
+      y: -20,
+      scale: 0.95,
+      transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
+    },
+    open: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+    },
+  };
 
-      {/* Navigation */}
-      <div className="flex items-center gap-5">
-        <AnimatePresence mode="wait">
-          {!token ? (
-            <motion.div
-              key="guest"
-              className="flex items-center gap-5"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
+  return (
+    <>
+      <motion.nav
+        initial={{ opacity: 0, y: -16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        className={`fixed top-0 w-full z-50 px-6 sm:px-8 py-4 transition-all duration-300 ${
+          scrolled || mobileMenuOpen
+            ? 'backdrop-blur-xl bg-[#0A0F1A]/80 border-b border-white/10'
+            : 'bg-transparent border-b border-transparent'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          {/* Logo */}
+          <motion.button
+            onClick={() => closeMobileMenuAndNavigate('/')}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className="flex items-center gap-2.5 group"
+          >
+            <div className="p-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 group-hover:bg-blue-500/20 transition-colors">
+              <span className="text-blue-500">
+                <ShieldIcon className="w-5 h-5" />
+              </span>
+            </div>
+            <span className="text-xl font-bold tracking-tight text-white group-hover:text-blue-400 transition-colors duration-200">
+              SecurePiece
+            </span>
+          </motion.button>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex flex-1 justify-end items-center gap-6">
+            <AnimatePresence mode="wait">
+              {!token ? (
+                <motion.div
+                  key="guest"
+                  className="flex items-center gap-6"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <NavLink
+                    Icon={HomeNavIcon}
+                    label="Home"
+                    onClick={() => navigate('/')}
+                    isActive={currentPath === '/'}
+                    custom={0}
+                  />
+                  <NavLink
+                    Icon={LoginNavIcon}
+                    label="Login"
+                    onClick={() => navigate('/login')}
+                    isActive={currentPath === '/login'}
+                    custom={1}
+                  />
+                  <PrimaryButton
+                    Icon={SignupNavIcon}
+                    label="Sign Up"
+                    onClick={() => navigate('/signup')}
+                    custom={2}
+                    variant="primary"
+                  />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="auth"
+                  className="flex items-center gap-6"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <NavLink
+                    Icon={DashboardNavIcon}
+                    label="Dashboard"
+                    onClick={() => navigate('/dashboard')}
+                    isActive={currentPath === '/dashboard'}
+                    custom={0}
+                  />
+                  <PrimaryButton
+                    Icon={LogoutNavIcon}
+                    label="Logout"
+                    onClick={handleLogout}
+                    custom={1}
+                    variant="danger"
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Mobile Menu Toggle Button */}
+          <div className="md:hidden flex items-center">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 text-slate-300 hover:text-white focus:outline-none"
+              aria-label="Toggle menu"
             >
-              <NavLink
-                Icon={HomeNavIcon}
-                label="Home"
-                onClick={() => navigate('/')}
-                isActive={location.pathname === '/'}
-                custom={0}
-              />
-              <NavLink
-                Icon={LoginNavIcon}
-                label="Login"
-                onClick={() => navigate('/login')}
-                isActive={location.pathname === '/login'}
-                custom={1}
-              />
-              <PrimaryButton
-                Icon={SignupNavIcon}
-                label="Sign Up"
-                onClick={() => navigate('/signup')}
-                custom={2}
-                variant="primary"
-              />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="auth"
-              className="flex items-center gap-5"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <NavLink
-                Icon={DashboardNavIcon}
-                label="Dashboard"
-                onClick={() => navigate('/dashboard')}
-                isActive={location.pathname === '/dashboard'}
-                custom={0}
-              />
-              <PrimaryButton
-                Icon={LogoutNavIcon}
-                label="Logout"
-                onClick={handleLogout}
-                custom={1}
-                variant="danger"
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </motion.nav>
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                {mobileMenuOpen ? (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                ) : (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                )}
+              </svg>
+            </button>
+          </div>
+        </div>
+      </motion.nav>
+
+      {/* Mobile Menu Dropdown */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial="closed"
+            animate="open"
+            exit="closed"
+            variants={menuVariants}
+            className="fixed top-[72px] left-0 w-full z-40 bg-[#0A0F1A]/95 backdrop-blur-2xl border-b border-white/10 md:hidden shadow-2xl"
+          >
+            <div className="flex flex-col p-6 gap-6">
+              {!token ? (
+                <>
+                  <button
+                    onClick={() => closeMobileMenuAndNavigate('/')}
+                    className={`flex items-center gap-3 text-lg font-medium p-2 rounded-lg transition-colors ${currentPath === '/' ? 'text-blue-400 bg-blue-500/10' : 'text-slate-300 hover:text-white hover:bg-white/5'}`}
+                  >
+                    <HomeNavIcon /> Home
+                  </button>
+                  <button
+                    onClick={() => closeMobileMenuAndNavigate('/login')}
+                    className={`flex items-center gap-3 text-lg font-medium p-2 rounded-lg transition-colors ${currentPath === '/login' ? 'text-blue-400 bg-blue-500/10' : 'text-slate-300 hover:text-white hover:bg-white/5'}`}
+                  >
+                    <LoginNavIcon /> Login
+                  </button>
+                  <div className="h-px w-full bg-white/10 my-2" />
+                  <button
+                    onClick={() => closeMobileMenuAndNavigate('/signup')}
+                    className="flex justify-center items-center gap-2 bg-blue-600 text-white font-semibold py-3 px-4 rounded-xl hover:bg-blue-500 transition-colors shadow-lg shadow-blue-500/25"
+                  >
+                    <SignupNavIcon /> Sign Up Free
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => closeMobileMenuAndNavigate('/dashboard')}
+                    className={`flex items-center gap-3 text-lg font-medium p-2 rounded-lg transition-colors ${currentPath === '/dashboard' ? 'text-blue-400 bg-blue-500/10' : 'text-slate-300 hover:text-white hover:bg-white/5'}`}
+                  >
+                    <DashboardNavIcon /> Dashboard
+                  </button>
+                  <div className="h-px w-full bg-white/10 my-2" />
+                  <button
+                    onClick={handleLogout}
+                    className="flex justify-center items-center gap-2 text-red-400 border border-red-500/30 hover:bg-red-500/10 font-semibold py-3 px-4 rounded-xl transition-colors"
+                  >
+                    <LogoutNavIcon /> Logout
+                  </button>
+                </>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 

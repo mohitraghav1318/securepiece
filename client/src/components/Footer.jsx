@@ -148,31 +148,58 @@ function Footer() {
   ];
 
   return (
-    <footer className="border-t border-gray-200 bg-white px-6 py-12">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
-        <div>
-          <p className="text-lg font-bold tracking-tight text-gray-900 inline-flex items-center gap-2">
-            <ShieldIcon className="w-5 h-5 text-blue-600" />
-            SecurePiece
+    <footer className="border-t border-slate-800 bg-[#0A0F1A] px-6 pt-20 pb-10 relative overflow-hidden">
+      {/* Decorative gradient bleed behind the footer */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[1px] bg-gradient-to-r from-transparent via-blue-600/50 to-transparent" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none" />
+
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 lg:gap-8 relative z-10">
+        <div className="md:col-span-2">
+          <button 
+            onClick={() => navigate('/')} 
+            className="text-2xl font-extrabold tracking-tight text-white inline-flex items-center gap-2 mb-6 group transition-all"
+          >
+            <div className="p-2 rounded-xl bg-blue-500/10 border border-blue-500/20 group-hover:bg-blue-500/20 transition-colors">
+              <ShieldIcon className="w-6 h-6 text-blue-500" />
+            </div>
+            Secure<span className="text-blue-500 group-hover:text-blue-400 transition-colors">Piece</span>
+          </button>
+          <p className="text-sm text-slate-400 leading-relaxed max-w-sm mb-8 font-light">
+            Battle-tested authentication infrastructure for modern applications. OTP, JWT, and full account
+            lifecycle management designed to ship fast.
           </p>
-          <p className="mt-3 text-sm text-gray-500 leading-relaxed max-w-sm">
-            Secure auth infrastructure for modern apps. OTP, JWT, and account
-            lifecycle flows designed to ship fast and stay reliable.
-          </p>
+          
+          {/* Social Links shown as Row of Icons on Desktop under description */}
+          <div className="flex items-center gap-4">
+            {socialLinks.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={link.label}
+                className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white hover:bg-blue-600 hover:border-blue-500 transition-all shadow-sm"
+              >
+                <link.Icon className="w-5 h-5" />
+              </a>
+            ))}
+          </div>
         </div>
 
         <div>
-          <p className="text-sm font-semibold tracking-wide uppercase text-gray-800">
-            Featured Pages
+          <p className="text-sm font-bold tracking-wider uppercase text-white mb-6">
+            Product
           </p>
-          <div className="mt-4 flex flex-col gap-2">
+          <div className="flex flex-col gap-4">
             {pageLinks.map((link) => (
               <button
                 key={link.path}
                 onClick={() => navigate(link.path)}
-                className="text-left text-sm text-gray-500 hover:text-blue-600 transition-colors inline-flex items-center gap-2"
+                className="text-left text-sm font-medium text-slate-400 hover:text-blue-400 transition-colors inline-flex items-center gap-3 group"
               >
-                <link.Icon />
+                <span className="text-slate-600 group-hover:text-blue-500 transition-colors">
+                  <link.Icon className="w-4 h-4" />
+                </span>
                 {link.label}
               </button>
             ))}
@@ -180,29 +207,29 @@ function Footer() {
         </div>
 
         <div>
-          <p className="text-sm font-semibold tracking-wide uppercase text-gray-800">
-            Social Links
+          <p className="text-sm font-bold tracking-wider uppercase text-white mb-6">
+            Legal & Support
           </p>
-          <div className="mt-4 flex flex-col gap-2">
-            {socialLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                target="_blank"
-                rel="noreferrer"
-                className="text-sm text-gray-500 hover:text-blue-600 transition-colors inline-flex items-center gap-2"
-              >
-                <link.Icon />
-                {link.label}
-              </a>
-            ))}
+          <div className="flex flex-col gap-4 text-sm font-medium text-slate-400">
+            <a href="#" className="hover:text-blue-400 transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-blue-400 transition-colors">Terms of Service</a>
+            <a href="#" className="hover:text-blue-400 transition-colors">Security Overview</a>
+            <a href="#" className="hover:text-blue-400 transition-colors inline-flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              System Status
+            </a>
           </div>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto mt-10 pt-6 border-t border-gray-100 text-xs text-gray-400 flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
-        <span>© {currentYear} SecurePiece. All rights reserved.</span>
-        <span>Built with zero auth headaches.</span>
+      <div className="max-w-6xl mx-auto mt-16 pt-8 border-t border-slate-800/60 text-xs text-slate-500 flex flex-col sm:flex-row gap-4 items-center justify-between relative z-10">
+        <span className="font-medium tracking-wide">© {currentYear} SecurePiece, Inc. All rights reserved.</span>
+        <span className="flex items-center gap-1.5 bg-slate-800/50 px-3 py-1.5 rounded-full border border-slate-700/50">
+           Built with zero auth headaches.
+        </span>
       </div>
     </footer>
   );
