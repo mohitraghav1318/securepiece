@@ -12,7 +12,7 @@ function Home() {
   const isLoggedIn = !!localStorage.getItem('token');
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
+    <div className="min-h-screen bg-[#0A0F1A] overflow-x-hidden selection:bg-blue-500/30">
       <HeroSection
         isLoggedIn={isLoggedIn}
         onSignup={() => navigate('/signup')}

@@ -1,54 +1,58 @@
 import { motion } from 'framer-motion';
-import { fadeUp } from './motionPresets';
+import { GlassyCard } from './ui/GlassyCard';
 
 function FeatureCard({ Icon, title, desc, custom }) {
   return (
-    <motion.div
-      custom={custom}
-      variants={fadeUp}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
-      whileHover={{ y: -4, transition: { duration: 0.2 } }}
-      className="group flex gap-4 p-5 rounded-2xl border border-gray-100 bg-white hover:border-blue-100 hover:shadow-md transition-all duration-200"
-    >
-      <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-100 transition-colors duration-200">
-        <Icon />
+    <GlassyCard customIndex={custom} className="flex flex-col gap-4 text-left">
+      <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-slate-700/50 text-blue-400 flex items-center justify-center group-hover:text-blue-300 transition-colors duration-200">
+        <Icon className="w-6 h-6" />
       </div>
       <div>
-        <h3 className="font-semibold text-gray-800 mb-1">{title}</h3>
-        <p className="text-gray-500 text-sm leading-relaxed">{desc}</p>
+        <h3 className="font-semibold text-white text-lg mb-2">{title}</h3>
+        <p className="text-slate-400 text-sm leading-relaxed">{desc}</p>
       </div>
-    </motion.div>
+    </GlassyCard>
   );
 }
 
 function FeaturesSection({ features }) {
   return (
-    <section className="bg-gray-50 py-20 px-6">
-      <div className="max-w-4xl mx-auto">
+    <section className="bg-[#0A0F1A] py-24 px-6 relative">
+      <div
+        className="absolute inset-0 opacity-10 pointer-events-none"
+        style={{
+          backgroundImage:
+            'radial-gradient(circle, #60a5fa 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
+        }}
+      />
+      <div className="max-w-6xl mx-auto relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
         >
           <p className="text-xs font-semibold tracking-widest text-blue-500 uppercase mb-3">
             What's inside
           </p>
-          <h2 className="text-3xl font-bold text-gray-900 mb-3">
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
             Everything auth. Nothing extra.
           </h2>
-          <p className="text-gray-500 max-w-lg mx-auto">
+          <p className="text-slate-400 max-w-xl mx-auto text-lg">
             Designed for teams that ship fast and sleep soundly. Plug in once,
             protect forever.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((feature, index) => (
-            <FeatureCard key={feature.title} {...feature} custom={index} />
+            <FeatureCard
+              key={feature.title}
+              {...feature}
+              custom={index * 0.1}
+            />
           ))}
         </div>
       </div>
