@@ -13,6 +13,97 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { ShieldIcon } from './homeComopnents/HomeIcons';
+
+function HomeNavIcon() {
+  return (
+    <svg
+      className="w-4 h-4"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 10.5L12 3l9 7.5" />
+      <path d="M5 9.5V20h14V9.5" />
+    </svg>
+  );
+}
+
+function LoginNavIcon() {
+  return (
+    <svg
+      className="w-4 h-4"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M15 3h3a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-3" />
+      <path d="M10 17l5-5-5-5" />
+      <path d="M15 12H3" />
+    </svg>
+  );
+}
+
+function SignupNavIcon() {
+  return (
+    <svg
+      className="w-4 h-4"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21c1.6-3.3 4.2-5 8-5s6.4 1.7 8 5" />
+      <path d="M19 5v4M17 7h4" />
+    </svg>
+  );
+}
+
+function DashboardNavIcon() {
+  return (
+    <svg
+      className="w-4 h-4"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="3" y="3" width="8" height="8" rx="1.5" />
+      <rect x="13" y="3" width="8" height="5" rx="1.5" />
+      <rect x="13" y="10" width="8" height="11" rx="1.5" />
+      <rect x="3" y="13" width="8" height="8" rx="1.5" />
+    </svg>
+  );
+}
+
+function LogoutNavIcon() {
+  return (
+    <svg
+      className="w-4 h-4"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M15 3h3a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-3" />
+      <path d="M10 17l-5-5 5-5" />
+      <path d="M5 12h12" />
+    </svg>
+  );
+}
 
 function Navbar() {
   const navigate = useNavigate();
@@ -44,16 +135,17 @@ function Navbar() {
     }),
   };
 
-  const NavLink = ({ label, onClick, isActive, custom }) => (
+  const NavLink = ({ label, onClick, isActive, custom, Icon }) => (
     <motion.button
       custom={custom}
       variants={navVariants}
       initial="hidden"
       animate="visible"
       onClick={onClick}
-      className="relative group text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors duration-200"
+      className="relative group inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors duration-200"
       whileTap={{ scale: 0.96 }}
     >
+      {Icon ? <Icon /> : null}
       {label}
       {/* Animated underline */}
       <motion.span
@@ -67,7 +159,13 @@ function Navbar() {
     </motion.button>
   );
 
-  const PrimaryButton = ({ label, onClick, custom, variant = 'primary' }) => {
+  const PrimaryButton = ({
+    label,
+    onClick,
+    custom,
+    variant = 'primary',
+    Icon,
+  }) => {
     const isPrimary = variant === 'primary';
     return (
       <motion.button
@@ -80,10 +178,11 @@ function Navbar() {
         whileTap={{ scale: 0.96 }}
         className={
           isPrimary
-            ? 'text-sm font-medium px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-sm shadow-blue-200'
-            : 'text-sm font-medium px-4 py-2 text-red-500 border border-red-200 rounded-lg hover:bg-red-50 hover:border-red-300 transition-colors duration-200'
+            ? 'inline-flex items-center gap-1.5 text-sm font-medium px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-sm shadow-blue-200'
+            : 'inline-flex items-center gap-1.5 text-sm font-medium px-4 py-2 text-red-500 border border-red-200 rounded-lg hover:bg-red-50 hover:border-red-300 transition-colors duration-200'
         }
       >
+        {Icon ? <Icon /> : null}
         {label}
       </motion.button>
     );
@@ -110,11 +209,9 @@ function Navbar() {
         whileTap={{ scale: 0.97 }}
         className="flex items-center gap-2 group"
       >
-        {/* Logo dot accent */}
-        <motion.span
-          className="w-2 h-2 rounded-full bg-blue-600 group-hover:scale-110 transition-transform duration-200"
-          whileHover={{ scale: 1.3 }}
-        />
+        <span className="text-blue-600 group-hover:scale-110 transition-transform duration-200">
+          <ShieldIcon className="w-5 h-5" />
+        </span>
         <span className="text-xl font-bold tracking-tight text-gray-900 group-hover:text-blue-600 transition-colors duration-200">
           SecurePiece
         </span>
@@ -133,15 +230,24 @@ function Navbar() {
               transition={{ duration: 0.2 }}
             >
               <NavLink
+                Icon={HomeNavIcon}
+                label="Home"
+                onClick={() => navigate('/')}
+                isActive={location.pathname === '/'}
+                custom={0}
+              />
+              <NavLink
+                Icon={LoginNavIcon}
                 label="Login"
                 onClick={() => navigate('/login')}
                 isActive={location.pathname === '/login'}
-                custom={0}
+                custom={1}
               />
               <PrimaryButton
+                Icon={SignupNavIcon}
                 label="Sign Up"
                 onClick={() => navigate('/signup')}
-                custom={1}
+                custom={2}
                 variant="primary"
               />
             </motion.div>
@@ -155,12 +261,14 @@ function Navbar() {
               transition={{ duration: 0.2 }}
             >
               <NavLink
+                Icon={DashboardNavIcon}
                 label="Dashboard"
                 onClick={() => navigate('/dashboard')}
                 isActive={location.pathname === '/dashboard'}
                 custom={0}
               />
               <PrimaryButton
+                Icon={LogoutNavIcon}
                 label="Logout"
                 onClick={handleLogout}
                 custom={1}

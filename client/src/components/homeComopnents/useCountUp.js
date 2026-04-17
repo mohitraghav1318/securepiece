@@ -1,12 +1,3 @@
-/**
- * useCountUp.js
- * Animates a number from 0 to `end` when the element enters the viewport.
- *
- * Usage:
- *   const { ref, value } = useCountUp({ end: 128000, suffix: 'K+' });
- *   <span ref={ref}>{value}</span>
- */
-
 import { useEffect, useRef, useState } from 'react';
 
 export function useCountUp({ end, duration = 1800, suffix = '', prefix = '' }) {
@@ -28,7 +19,6 @@ export function useCountUp({ end, duration = 1800, suffix = '', prefix = '' }) {
           const tick = (now) => {
             const elapsed = now - startTime;
             const progress = Math.min(elapsed / duration, 1);
-            // ease-out cubic
             const eased = 1 - Math.pow(1 - progress, 3);
             const current = Math.round(eased * end);
             setValue(prefix + current.toLocaleString() + suffix);

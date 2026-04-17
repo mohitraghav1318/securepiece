@@ -1,9 +1,3 @@
-/**
- * HomeIcons.jsx
- * Inline SVG icons used in the Home page features section.
- * Kept here so Home.jsx stays clean.
- */
-
 export function OtpIcon() {
   return (
     <svg

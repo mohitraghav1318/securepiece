@@ -8,6 +8,8 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import Home from '../pages/Home';
+import About from '../pages/About';
+import Contact from '../pages/Contact';
 import Login from '../features/auth/pages/Login';
 import Signup from '../features/auth/pages/Signup';
 import Dashboard from '../features/dashboard/pages/Dashboard';
@@ -24,6 +26,24 @@ function AppRoutes() {
           element={
             <PageWrapper>
               <Home />
+            </PageWrapper>
+          }
+        />
+
+        <Route
+          path="/about"
+          element={
+            <PageWrapper>
+              <About />
+            </PageWrapper>
+          }
+        />
+
+        <Route
+          path="/contact"
+          element={
+            <PageWrapper>
+              <Contact />
             </PageWrapper>
           }
         />
